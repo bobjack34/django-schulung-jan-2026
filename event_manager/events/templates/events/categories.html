@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>Übersicht der Kategorien</title>
+  </head>
+  <body>
+    <h1>Übersicht der Kategorien</h1>
+    <ul>
+        {% for category in categories %}
+            <li><a href="{% url 'events:category-detail' category.pk %}">{{category}}</a></li>
+        {% endfor %}
+    </ul>
+  </body>
+</html>

@@ -19,7 +19,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ["id", "name", "sub_title", "number_events"]
     list_display_links = ["id", "name"]
 
-    def number_events(self, obj: Category):
+    def number_events(self, obj: Category) -> int:
         # greift auf den related_name des Event-Models zu (reverse Beziehung)
         return obj.events.count()  # SELECT count(*) from ...
 
@@ -39,6 +39,9 @@ class EventAdmin(admin.ModelAdmin):
 
     # bessere Aufteilung auf der Detailseite
     fieldsets = (
-        ("Standard Infos", {"fields": ("name", "category")}),
-        ("Detail Infos", {"fields": ("description", "sub_title", "is_active")}),
+        ("Standard Infos", {"fields": ("name", "category", "min_group", "date")}),
+        (
+            "Detail Infos",
+            {"fields": ("description", "sub_title", "is_active", "author")},
+        ),
     )

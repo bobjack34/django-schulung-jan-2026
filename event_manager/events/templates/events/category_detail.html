@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title>Kategorie {{category}}</title>
+  </head>
+  <body>
+    <a href="{% url 'events:categories' %}">Zurück zur Übersicht der Kategorien</a>
+    <h1>Kategorie {{category}}</h1>
+    <p>{{category.sub_title|default:"-"}}</p>
+    <p>{{category.description|default:"-"}}</p>
+    
+  </body>
+</html>

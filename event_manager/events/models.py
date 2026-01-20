@@ -1,4 +1,8 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()  # eine Klasse
 
 
 class DateMixin(models.Model):
@@ -28,6 +32,12 @@ class Category(DateMixin):
 
 class Event(DateMixin):
     # Aufgabe: makemigrations und migrate machen
+
+    class Group(models.IntegerChoices):
+        BIG = 20, "große Gruppe"
+        SMALL = 5, "kleine Gruppe"
+        UNLIMITED = 0, "keine Begrenzung"
+
     name = models.CharField(max_length=100)
     sub_title = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -35,8 +45,17 @@ class Event(DateMixin):
         Category,
         on_delete=models.CASCADE,
         related_name="events",
-    )
+    )  # books.events.all()
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="events",
+    )  # bob.events.all()
+    date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
+    min_group = models.PositiveSmallIntegerField(
+        choices=Group.choices, default=Group.UNLIMITED
+    )
 
     def __str__(self) -> str:
         return self.name
