@@ -16,9 +16,17 @@
 - https://djangoheroes.friendlybytes.net
 
 
-# Aufgabe Tag 2
-- Views anlegen für euer eigenes Projekt (Detailview und Listview)
-=> Nicht vergessen: aktuelles environment deaktivieren und anderes aktivieren
-- Verlinkungen für die Views (urls.py)
-- Templates anlegen für Detail und list
-=> Kein COPY & PASTE!
+## Tag 2
+
+## Themen:
+- Views (Detail und Liste, generisch-klassenbasiert und funktionsbasiert)
+- Queryset 
+- Templates Einführung, Variablen, Tags
+- Factory für Events
+- Management Commando für das ERstellen von Events
+- eigenes User-Model
+
+## Websites
+- https://djangoheroes.friendlybytes.net/create_project/user_model.html
+- https://djangoheroes.friendlybytes.net/testdaten/create_testdata.html
+- https://factoryboy.readthedocs.io/en/stable/orms.html
