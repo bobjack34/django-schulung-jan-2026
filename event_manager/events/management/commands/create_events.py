@@ -35,6 +35,9 @@ class Command(BaseCommand):
         categories = CategoryFactory.create_batch(10)
         users = get_user_model().objects.all()
 
+        if not users:
+            raise SystemExit("Keine User im System")
+
         print("Creating events...")
         for _ in range(number):
             EventFactory(

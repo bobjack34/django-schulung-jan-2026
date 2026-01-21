@@ -37,9 +37,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "crispy_forms",
+    "crispy_bootstrap5",
     "events",
     "users",
 ]
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -51,12 +56,21 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+if DEBUG:
+    INSTALLED_APPS.append("django_extensions")
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE.extend(["debug_toolbar.middleware.DebugToolbarMiddleware"])
+
+    INTERNAL_IPS = (
+        "127.0.0.1",
+    )  # im Docker-Container muss die IP des Docker-Containers rein
+
 ROOT_URLCONF = "event_manager.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "event_manager" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -69,6 +83,34 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "event_manager.wsgi.application"
+
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {
+            "format": "[{asctime}] [{levelname}] {name}: {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+        },
+        "filehandler": {
+            "class": "logging.FileHandler",
+            "filename": "dev.log",
+            "formatter": "simple",
+            "level": "DEBUG",
+        },
+    },
+    "root": {
+        "handlers": ["console", "filehandler"],
+        "level": "DEBUG",
+    },
+}
 
 
 # Database
@@ -119,4 +161,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "static/"  # das ist der URL-Path (hat nichts mit dem Verzeichnis zu tun)
+STATICFILES_DIRS = [BASE_DIR / "static"]  # hier sucht Django nach statischen Dateien

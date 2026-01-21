@@ -1,18 +1,28 @@
-<!doctype html>
-<html lang="de">
-  <head>
-    <meta charset="utf-8" />
-    <title>Übersicht der Events</title>
-  </head>
-  <body>
-    <h1>Übersicht der Events</h1>
-    <ul>
-        {% for event in object_list %}
-        <li>{{event}}</li>
-            {% comment %}
-                <li><a href="{% url 'events:category-detail' category.pk %}">{{category}}</a></li>
-            {% endcomment %}
-        {% endfor %}
-    </ul>
-  </body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}
+Event Übersicht
+{% endblock %}
+
+{% block head%}
+<h1 class="display-6 fw-bold lh-1">Event Übersicht</h1>
+<p>Tolle Events und Aktivitäten!</p>
+{% endblock %}
+
+{% block content %}
+
+<ul class="list-group event_box">
+
+
+{% for event in object_list %}
+    <a href="{% url 'events:event-detail' event.pk %}">
+    <li class="list-group-item rounded">
+    <small><span>am {{event.date}} von {{event.author}}</span></small><br>
+    <b>{{event.name}}</b>
+        <span class="badge rounded-pill bg-primary">{{event.category}}</span>
+    </li>
+  </a>
+{% endfor%}
+</ul>
+
+{%endblock%}

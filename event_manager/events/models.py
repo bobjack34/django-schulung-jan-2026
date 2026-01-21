@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse_lazy
+from django.core.validators import MinLengthValidator
 
 
 User = get_user_model()  # eine Klasse
@@ -38,7 +40,12 @@ class Event(DateMixin):
         SMALL = 5, "kleine Gruppe"
         UNLIMITED = 0, "keine Begrenzung"
 
-    name = models.CharField(max_length=100)
+    name = models.CharField(
+        max_length=100,
+        validators=[
+            MinLengthValidator(3),
+        ],
+    )
     sub_title = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     category = models.ForeignKey(
@@ -56,6 +63,11 @@ class Event(DateMixin):
     min_group = models.PositiveSmallIntegerField(
         choices=Group.choices, default=Group.UNLIMITED
     )
+
+    def get_absolute_url(self) -> str:
+        """Liefert die Homepage zu einem Event. Nach Eintragen oder Update wird auf
+        diese Adresse weitergeleitet."""
+        return reverse_lazy("events:event-detail", kwargs={"pk": self.pk})
 
     def __str__(self) -> str:
         return self.name

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Neuen Event anlegen
+{% endblock %}
+
+
+{% block head %}
+Neuen Event anlegen
+{% endblock %}
+
+
+{% block content %}
+<div class="col-12 col-lg-7 mb-5">
+
+    <form method="POST">
+    {% csrf_token %}
+    {{form|crispy}}
+    <input type="submit" value="Jetzt eintragen" class="btn btn-primary" />
+    </form>
+</div>
+
+{% endblock %}

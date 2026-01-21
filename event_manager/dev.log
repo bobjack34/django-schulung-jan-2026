@@ -1,0 +1,22 @@
+[INFO] django.utils.autoreload: Watching for file changes with StatReloader
+[INFO] django.utils.autoreload: C:\Users\Dozent\django_projects\event_project\event_manager\event_manager\settings.py changed, reloading.
+[INFO] django.utils.autoreload: Watching for file changes with StatReloader
+[INFO] django.utils.autoreload: Watching for file changes with StatReloader
+[INFO] django.utils.autoreload: C:\Users\Dozent\django_projects\event_project\event_manager\events\views.py changed, reloading.
+[INFO] django.utils.autoreload: Watching for file changes with StatReloader
+[INFO] django.utils.autoreload: C:\Users\Dozent\django_projects\event_project\event_manager\events\views.py changed, reloading.
+[INFO] django.utils.autoreload: Watching for file changes with StatReloader
+[INFO] django.utils.autoreload: C:\Users\Dozent\django_projects\event_project\event_manager\events\views.py changed, reloading.
+[INFO] django.utils.autoreload: Watching for file changes with StatReloader
+[INFO] django.utils.autoreload: C:\Users\Dozent\django_projects\event_project\event_manager\events\views.py changed, reloading.
+[INFO] django.utils.autoreload: Watching for file changes with StatReloader
+[DEBUG] events.views: Das hat ja super geklappt admin
+[INFO] django.utils.autoreload: C:\Users\Dozent\django_projects\event_project\event_manager\event_manager\settings.py changed, reloading.
+[2026-01-21 14:57:28,371] [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+[2026-01-21 14:57:56,635] [DEBUG] events.views: Das hat ja super geklappt admin
+[2026-01-21 15:04:38,425] [INFO] django.utils.autoreload: C:\Users\Dozent\django_projects\event_project\event_manager\events\models.py changed, reloading.
+[2026-01-21 15:04:40,416] [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+[2026-01-21 15:04:41,941] [INFO] django.utils.autoreload: C:\Users\Dozent\django_projects\event_project\event_manager\events\models.py changed, reloading.
+[2026-01-21 15:04:43,957] [INFO] django.utils.autoreload: Watching for file changes with StatReloader
+[2026-01-21 15:04:58,987] [INFO] django.utils.autoreload: C:\Users\Dozent\django_projects\event_project\event_manager\events\models.py changed, reloading.
+[2026-01-21 15:05:00,904] [INFO] django.utils.autoreload: Watching for file changes with StatReloader

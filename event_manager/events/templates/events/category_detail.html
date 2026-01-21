@@ -1,14 +1,17 @@
-<!doctype html>
-<html lang="de">
-  <head>
-    <meta charset="utf-8" />
-    <title>Kategorie {{category}}</title>
-  </head>
-  <body>
-    <a href="{% url 'events:categories' %}">Zurück zur Übersicht der Kategorien</a>
-    <h1>Kategorie {{category}}</h1>
+{% extends "base.html" %}
+
+{% block title %}
+Kategorie {{category}}
+{% endblock %}
+
+
+{% block head %}
+Kategorie {{category}}
+{% endblock %}
+
+
+{% block content %}
+<a href="{% url 'events:categories' %}">Zurück zur Übersicht der Kategorien</a>
     <p>{{category.sub_title|default:"-"}}</p>
     <p>{{category.description|default:"-"}}</p>
-    
-  </body>
-</html>
+{% endblock %}
