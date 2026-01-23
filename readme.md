@@ -86,3 +86,6 @@ und hier rein pasten:
 - https://www.django-rest-framework.org
 - ein besserer Token für Django Restframework:
 - https://django-rest-framework-simplejwt.readthedocs.io/en/latest/
+
+Aus Gründen der bessseren Verständlichkeit wurde die .env-Datei und das per collectstatic generierte Verzeichnis "staticfiles"
+nicht in die .gitignore übernommen.
