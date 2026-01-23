@@ -1,0 +1,13 @@
+### einen Event anlegen mit Token
+POST http://127.0.0.1:8000/api/events/
+Content-Type: application/json
+Authorization: Token 805d83fc111a8427026dfc21b5bb07dec649d2cd
+
+{
+    "name": "Ski-Treff am Berg",
+    "sub_title": "bla blubb",
+    "description": "some description",
+    "date": "2026-12-20T09:00:00Z",
+    "min_group": 5,
+    "category": 53 
+}

@@ -1,5 +1,10 @@
 # Django Kurs 1 Woche
 
+## Installationshinweis 
+
+.env Datei anlegen auf Basis von env_example.
+
+
 ## Tag 1
 
 ### Themen:
@@ -69,3 +74,15 @@ Django Extensions installieren.
 und hier rein pasten:
 
     https://dreampuf.github.io/GraphvizOnline/
+
+
+## Tag 5
+
+### Websites
+- https://djangoheroes.friendlybytes.net/organisation/organize_settings.html#django-environ
+- https://django-environ.readthedocs.io/en/latest/install.html
+- https://djangoheroes.friendlybytes.net/profiwissen/whitenoise.html#index-0
+- https://djangoheroes.friendlybytes.net/working_with_forms/static_files.html#statische-dateien-deployen
+- https://www.django-rest-framework.org
+- ein besserer Token für Django Restframework:
+- https://django-rest-framework-simplejwt.readthedocs.io/en/latest/

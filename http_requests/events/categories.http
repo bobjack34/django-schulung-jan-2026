@@ -1,0 +1,2 @@
+### Test Post Request an Temperature-Endpoint
+GET http://127.0.0.1:8000/api/events/categories

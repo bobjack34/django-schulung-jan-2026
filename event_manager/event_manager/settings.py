@@ -12,21 +12,32 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 
+import environ
+from django.contrib.messages import constants as messages
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+environ.Env.read_env(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-!4-j+(_^3pigsijkt40u8#d!tntfu+#g&bb&j@a_ngvb9(@=&i"
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", default=False)
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "example.com"]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
+MESSAGE_TAGS = {
+    messages.DEBUG: "alert-secondary",
+    messages.INFO: "alert-info",
+    messages.SUCCESS: "alert-success",
+    messages.WARNING: "alert-warning",
+    messages.ERROR: "alert-danger",
+}
 
 # Application definition
 
@@ -36,11 +47,17 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "whitenoise.runserver_nostatic",  # << nutzt whitenoise auch in DEV
     "django.contrib.staticfiles",
     "crispy_forms",
     "crispy_bootstrap5",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "drf_spectacular",  # <<< generiert openapi spezifikation
+    "drf_spectacular_sidecar",  # <<< stellt openapi in GUI dar
     "events",
     "users",
+    "pages",
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
@@ -48,6 +65,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # lieftert statische Dateien auch in produktiv
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -55,6 +73,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 
 if DEBUG:
     INSTALLED_APPS.append("django_extensions")
@@ -64,6 +83,28 @@ if DEBUG:
     INTERNAL_IPS = (
         "127.0.0.1",
     )  # im Docker-Container muss die IP des Docker-Containers rein
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.BrowsableAPIRenderer",  # das sollte live raus!
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Event Manager API",
+    "DESCRIPTION": "Django Event manager",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    "SERVE_AUTHENTICATION": ["rest_framework.authentication.SessionAuthentication"],
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],
+    # OTHER SETTINGS
+}
+
 
 ROOT_URLCONF = "event_manager.urls"
 
@@ -145,6 +186,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # eigenes User-Model registrieren (muss vor der 1. Migration eingerichtet sein)
 AUTH_USER_MODEL = "users.User"
 
+LOGIN_REDIRECT_URL = "/events"
+LOGOUT_REDIRECT_URL = "/events"
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
@@ -162,4 +206,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"  # das ist der URL-Path (hat nichts mit dem Verzeichnis zu tun)
-STATICFILES_DIRS = [BASE_DIR / "static"]  # hier sucht Django nach statischen Dateien
+
+# hier sucht Django auch nach statischen Dateien
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# hier legt Django gesammelt alle statischen Dateien ab
+# Sammeln geht mit: python manage.py collectstatic
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+}

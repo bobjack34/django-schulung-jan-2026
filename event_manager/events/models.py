@@ -1,7 +1,11 @@
+from functools import partial
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.core.validators import MinLengthValidator
+
+from .validators import datetime_in_future, bad_word_filter
 
 
 User = get_user_model()  # eine Klasse
@@ -35,6 +39,16 @@ class Category(DateMixin):
 class Event(DateMixin):
     # Aufgabe: makemigrations und migrate machen
 
+    class Meta:
+        verbose_name = "Event"
+        # führt direkt auf der Datenbank den constraint aus, und verhindert damit,
+        # das andere Prozesse (die an Django vorbeigehen) gegen diese Regeln verstoßen.
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=["author", "name", "date"], name="unique_author_event"
+        #     ),
+        # ]
+
     class Group(models.IntegerChoices):
         BIG = 20, "große Gruppe"
         SMALL = 5, "kleine Gruppe"
@@ -47,7 +61,16 @@ class Event(DateMixin):
         ],
     )
     sub_title = models.CharField(max_length=200, null=True, blank=True)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(
+        null=True,
+        blank=True,
+        validators=[
+            partial(
+                bad_word_filter,
+                ["evil", "doof"],
+            ),
+        ],
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -58,11 +81,27 @@ class Event(DateMixin):
         on_delete=models.CASCADE,
         related_name="events",
     )  # bob.events.all()
-    date = models.DateTimeField()
+    date = models.DateTimeField(
+        validators=[
+            datetime_in_future,
+        ]
+    )
     is_active = models.BooleanField(default=True)
     min_group = models.PositiveSmallIntegerField(
         choices=Group.choices, default=Group.UNLIMITED
     )
+
+    def get_related_events(self) -> models.QuerySet[Event]:
+        """Zeige ähnliche Events zu einem Event.
+        Dazu exkludieren wir den eigentlichen Event."""
+
+        # hole alle Events die in der selben Kategorie und Min-Group sind
+        related_events = Event.objects.filter(
+            category=self.category, min_group=self.min_group
+        )
+
+        # exkludiere den Event selbst
+        return related_events.exclude(pk=self.pk)
 
     def get_absolute_url(self) -> str:
         """Liefert die Homepage zu einem Event. Nach Eintragen oder Update wird auf

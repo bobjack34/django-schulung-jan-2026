@@ -1,0 +1,9 @@
+### Eine neue kategorie eintragen
+POST http://127.0.0.1:8000/api/events/category
+Content-Type: application/json
+
+{
+    "name": "Skifahren",
+    "sub_title": "bla blubb",
+    "description": "some description"
+}

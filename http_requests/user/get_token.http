@@ -1,0 +1,8 @@
+### Token für user holen via obtain_auth_token: 805d83fc111a8427026dfc21b5bb07dec649d2cd
+POST http://127.0.0.1:8000/apitoken
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "abcd1234"
+}

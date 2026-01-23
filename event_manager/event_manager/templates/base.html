@@ -23,7 +23,7 @@
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
         <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-            <img src="{% static 'images/penglogo.png' %}" style="width:50px; margin-right:10px;" />
+            <img  style="width:50px; margin-right:10px;" />
         </a>
 
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0" style="margin-left:120px;">
@@ -35,7 +35,7 @@
                   text-white">Kategorien</a></li>
         </ul>
 
-        <form action="" method="get" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+        <form action="{% url 'events:events-search' %}" method="get" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
           <input name="q" required="required" type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
         </form>
 
@@ -48,6 +48,7 @@
             <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
           </a>
           <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item">Hallo {{user}}!</a></li>
             <li><a class="dropdown-item" href="{% url 'events:event-create' %}">Event anlegen</a></li>
 
             {% comment %} 
@@ -57,8 +58,6 @@
             <li><a class="dropdown-item" href="">Passwort ändern</a></li>
             <li><hr class="dropdown-divider"></li>
 
-            {% comment %} 
-            <!-- LOGOUT: Freischalten, wenn der Login und Signup implementiert wird -->
             <li>
                 <!-- ab django 4.2 ist kein logout per GET mehr erlaubt! -->
                 <form method="POST" 
@@ -67,34 +66,17 @@
                       <button class="dropdown-item">Sign out</button>
                 </form>
             </li>
-            {% endcomment %}
-            <li>
-              <a class="dropdown-item" href="">Sign out</a>
-            </li>
+
 
           </ul>
         </div>
 
           {% else %}
 
-          {% comment %} 
-          <!-- das Freischalten, wenn der Login und Signup implementiert wird -->
-          <a href="{% url 'login' %}">
+          <a href="{% url 'login' %}?next={{request.get_full_path}}">
           <button type="button" class="btn btn-outline-light me-2">Login</button>
           </a>
-          {% endcomment %}
-          <a href="">
-          <button type="button" class="btn btn-outline-light me-2">Login</button>
-          </a>
-
-          {% comment %} 
-          <!-- das Freischalten, wenn der Login und Signup implementiert wird -->
-          <a href="{% url 'user:signup' %}">
-          {% endcomment %}
-          <a href="">
-          <button type="button" class="btn btn-warning">Sign-up</button>
-          </a>
-
+          
          {% endif %}
         </div>
       </div>
@@ -107,6 +89,7 @@
 <div class="row">
     <div class="col-12" style="margin-top:25px;">
     {% block head %}{% endblock %}
+    {% include "snippets/messages.html" %}
     </div>
 </div>
 </div>

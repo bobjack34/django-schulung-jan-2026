@@ -8,6 +8,7 @@ from .views import (
     category_detail,
     category_create,
     EventListView,
+    EventSearchView,
     EventDetailView,
     EventCreateView,
     EventUpdateView,
@@ -18,6 +19,7 @@ app_name = "events"  # auf Basis von app_name:path_name wird die URL gebildet
 
 urlpatterns = [
     path("", EventListView.as_view(), name="events"),
+    path("search", EventSearchView.as_view(), name="events-search"),
     path("<int:pk>", EventDetailView.as_view(), name="event-detail"),
     path("update/<int:pk>", EventUpdateView.as_view(), name="event-update"),
     path("delete/<int:pk>", EventDeleteView.as_view(), name="event-delete"),

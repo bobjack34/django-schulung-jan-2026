@@ -1,0 +1,7 @@
+### Test Post Request an Temperature-Endpoint
+POST http://127.0.0.1:8000/api/events/temperature
+Content-Type: application/json
+
+{
+    "celsius": 40
+}

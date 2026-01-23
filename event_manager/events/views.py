@@ -1,5 +1,6 @@
 import logging
 
+
 from django.http import HttpRequest, HttpResponse, Http404
 from django.views.generic import (
     ListView,
@@ -10,6 +11,9 @@ from django.views.generic import (
 )
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 
 from .models import Category, Event
 from .forms import CategoryForm, EventForm
@@ -18,7 +22,20 @@ from .forms import CategoryForm, EventForm
 logger = logging.getLogger(__name__)
 
 
-class EventDeleteView(DeleteView):
+class UserIsOwner(UserPassesTestMixin):
+    """prüft, ob der eingeloggte User auch der Author des Events ist."""
+
+    def test_func(self) -> bool:
+        """Wenn User der Author ist, return True, ansonsten False.
+        Ausnahme: Adminuser darf auch die Aktion ausführen.
+        """
+        return (
+            self.request.user == self.get_object().author
+            or self.request.user.is_superuser
+        )
+
+
+class EventDeleteView(UserIsOwner, SuccessMessageMixin, DeleteView):
     """
     Löschen eines Events
     Template liegt unter events/event_confirm_delete.html
@@ -27,9 +44,10 @@ class EventDeleteView(DeleteView):
 
     model = Event
     success_url = reverse_lazy("events:events")  # Redirect nach Löschen
+    success_message = "Event wurde erfolgreich gelöscht!"
 
 
-class EventUpdateView(UpdateView):
+class EventUpdateView(UserIsOwner, SuccessMessageMixin, UpdateView):
     """
     Uupdate eines Events
     Template liegt unter events/event_form.html
@@ -38,9 +56,14 @@ class EventUpdateView(UpdateView):
 
     model = Event
     form_class = EventForm
+    success_message = "Event wurde erfolgreich editiert!"
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Da gab es einen Fehler!")
+        return super().form_invalid(form)
 
 
-class EventCreateView(CreateView):
+class EventCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     """
     Eintragen eines neuen Events
     Template liegt unter events/event_form.html
@@ -49,6 +72,7 @@ class EventCreateView(CreateView):
 
     model = Event
     form_class = EventForm
+    success_message = "Event wurde erfolgreich angelegt!"
 
     def form_valid(self, form):
         # Wir hatten den User aus dem Formular entfernt, deshalb
@@ -57,6 +81,10 @@ class EventCreateView(CreateView):
         logger.debug("Das hat ja super geklappt %s", self.request.user)
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "Da gab es einen Fehler!")
+        return super().form_invalid(form)
 
 
 class EventDetailView(DetailView):
@@ -69,10 +97,27 @@ class EventDetailView(DetailView):
     model = Event
 
 
+class EventSearchView(ListView):
+    """
+    /events?q=<SUCHWORD>
+    """
+
+    model = Event
+    queryset = Event.objects.select_related("category", "author")
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        q = self.request.GET.get("q")
+        if q:
+            qs = qs.filter(name__icontains=q)
+        return qs
+
+
 class EventListView(ListView):
     """
     Auflisten der Events
     Template muss unter events/event_list.html liegen
+    Default Queryset: Event.objects.all()
     /events
     """
 
@@ -85,6 +130,14 @@ class EventListView(ListView):
     queryset = Event.objects.select_related("category", "author")
     # template_name = "events/event_list.html"
 
+    def get_queryset(self):
+        # http://127.0.0.1:8000/events/?category=Sports
+        qs = super().get_queryset()
+        category = self.request.GET.get("category")
+        if category:
+            qs = qs.filter(category__name__iexact=category)
+        return qs
+
 
 def category_create(request):
     """
@@ -96,6 +149,7 @@ def category_create(request):
         form = CategoryForm(request.POST)
         if form.is_valid():
             # form.save() fürht intern Category.save()
+            # messages.error(request, "Diese Aktion ist nicht erlaubt!")
             category = form.save()
             # return redirect("events:categories")
             return redirect("events:category-detail", pk=category.pk)

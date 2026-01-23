@@ -19,17 +19,10 @@ in <a href="{% url 'events:category-detail' object.category.pk %}">
 {{object.category}}</a>
 </p>
 
-<p>
-  <a href="{% url 'events:event-update' object.pk %}">editieren</a>
-  <a href="{% url 'events:event-delete' object.id %}">löschen</a>
-</p>
-
-{% if user.is_authenticated and user == object.author %}
+{% if user.is_authenticated and user == object.author or user.is_superuser %}
 <span style="font-size:12px;">
-{% comment %}
-<a href="{% url 'events:event_update' object.id %}">editieren</a> |
-<a href="{% url 'events:event_delete' object.id %}">löschen</a>
-{% endcomment %}
+<a href="{% url 'events:event-update' object.pk %}">editieren</a> |
+<a href="{% url 'events:event-delete' object.pk %}">löschen</a>
 </span>
 {% endif %}
 
@@ -50,10 +43,10 @@ in <a href="{% url 'events:category-detail' object.category.pk %}">
       <li>Min Gruppengröße: {{object.get_min_group_display}}</li>
     </ul>
 
-    {% if object.related_events.exists %}
+    {% if object.get_related_events.exists %}
     <h3>Ähnliche Events</h3>
     <ul>
-      {% for related in object.related_events %}
+      {% for related in object.get_related_events %}
         <li><a href="{{related.get_absolute_url}}">{{related.name}}</a></li>
       {% endfor %}
     </ul>
